@@ -1,6 +1,6 @@
 package com.frotly.mq.test;
 
-import com.frotly.mq.consumer.SpringConsumer;
+import com.cloudzone.cloudmq.api.open.base.Consumer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -10,12 +10,17 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class SpringConsumerTest {
 
     public static void main(String[] args) throws InterruptedException {
+//        ApplicationContext ac = new ClassPathXmlApplicationContext("classpath:spring-consumer.xml");
+//        SpringConsumer consumer = (SpringConsumer) ac.getBean("consumer");
+//
+//        Thread.sleep(20 * 1000);
+//
+//        System.out.println("end");
+//        consumer.destroy();
+
         ApplicationContext ac = new ClassPathXmlApplicationContext("classpath:spring-consumer.xml");
-        SpringConsumer consumer = (SpringConsumer) ac.getBean("consumer");
+        Consumer consumer = (Consumer) ac.getBean("cloudConsumer");
+        System.out.println("consumer start");
 
-        Thread.sleep(20 * 1000);
-
-        System.out.println("end");
-        consumer.destroy();
     }
 }

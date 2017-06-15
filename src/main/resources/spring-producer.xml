@@ -3,10 +3,23 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="producer" class="com.frotly.mq.producer.SpringProducer" init-method="init" destroy-method="destroy">
-        <constructor-arg name="producerGroup" value="rocketmq-test"/>
-        <constructor-arg name="namesrvAddr" value="10.128.31.15:9876"/>
-        <constructor-arg name="instanceName" value="test"/>
+    <!--<bean id="producer" class="com.frotly.mq.producer.SpringProducer" init-method="init" destroy-method="destroy">-->
+    <!--<constructor-arg name="producerGroup" value="rocketmq-test"/>-->
+    <!--<constructor-arg name="namesrvAddr" value="10.128.31.15:9876"/>-->
+    <!--<constructor-arg name="instanceName" value="test"/>-->
+    <!--</bean>-->
+
+    <bean id="cloudProducer" class="com.cloudzone.cloudmq.api.open.bean.ProducerBean"
+          init-method="start" destroy-method="shutdown">
+        <property name="properties"> <!--生产者配置信息-->
+            <props>
+                <prop key="ProducerGroupId">ProducerGroupId-nic</prop>
+                <!--TOPIC_NAME_AND_AUTH_KEY 即为 Topic 和 AuthKey 的键值对-->
+                <prop key="TOPIC_NAME_AND_AUTH_KEY">
+                    o2m-nic-sku-send-200:0efcbf0f2038c4e208c34f7f03aff4c8c;o2m-nic-sku-send-300:0cc0170febc084ee6b5755101988f53fd
+                </prop>
+            </props>
+        </property>
     </bean>
 
 </beans>

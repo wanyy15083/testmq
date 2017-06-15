@@ -5,14 +5,54 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="consumer" class="com.frotly.mq.consumer.SpringConsumer" init-method="init" destroy-method="destroy">
-        <constructor-arg name="consumerGroup" value="rocketmq-test"/>
-        <constructor-arg name="namesrvAddr" value="10.128.31.15:9876"/>
-        <constructor-arg name="instanceName" value="test"/>
-        <constructor-arg name="topic" value="testTopic"/>
-        <constructor-arg name="messageListener" ref="messageListener"/>
-    </bean>
+    <!--<bean id="consumer" class="com.frotly.mq.consumer.SpringConsumer" init-method="init" destroy-method="destroy">-->
+    <!--<constructor-arg name="consumerGroup" value="rocketmq-test"/>-->
+    <!--<constructor-arg name="namesrvAddr" value="10.128.31.15:9876"/>-->
+    <!--<constructor-arg name="instanceName" value="test"/>-->
+    <!--<constructor-arg name="topic" value="testTopic"/>-->
+    <!--<constructor-arg name="messageListener" ref="messageListener"/>-->
+    <!--</bean>-->
 
-    <bean id="messageListener" class="com.frotly.mq.listener.MessageListener"/>
+    <!--<bean id="messageListener" class="com.frotly.mq.listener.MessageListener"/>-->
+
+    <!-- Listener 配置，此处监听器的 class 路径由使用者自行配置, CloudMQ 所提供的 jar 包并不包含此路径 -->
+    <bean id="msgListener" class="com.frotly.mq.listener.ConsumerMessageListener"></bean>
+
+    <!-- Consumer 配置 -->
+    <bean id="cloudConsumer" class="com.cloudzone.cloudmq.api.open.bean.ConsumerBean"
+          init-method="start" destroy-method="shutdown">
+        <property name="properties">
+            <props>
+                <prop key="ConsumerGroupId">ConsumerGroupId-nic</prop>
+                <!--TOPIC_NAME_AND_AUTH_KEY 即为 Topic 和 AuthKey 的键值对-->
+                <prop key="TOPIC_NAME_AND_AUTH_KEY">
+                    o2m-nic-sku-send-200:0efcbf0f2038c4e208c34f7f03aff4c8c;o2m-nic-sku-send-300:0cc0170febc084ee6b5755101988f53fd
+                </prop>
+                <!--设置消息队列为广播消费模型，（不设置则默认为集群消费） -->
+                <!--<prop key="MessageModel">BROADCASTING</prop>-->
+            </props>
+        </property>
+        <property name="subscriptionTable">
+            <map>
+                <entry value-ref="msgListener">
+                    <key>
+                        <bean class="com.cloudzone.cloudmq.api.open.bean.Subscription">
+                            <property name="topic" value="o2m-nic-sku-send-200"/>
+                            <property name="expression" value="sku200"/>
+                        </bean>
+                    </key>
+                </entry>
+                <entry value-ref="msgListener">
+                    <key>
+                        <bean class="com.cloudzone.cloudmq.api.open.bean.Subscription">
+                            <property name="topic" value="o2m-nic-sku-send-300"/>
+                            <property name="expression" value="sku300"/>
+                        </bean>
+                    </key>
+                </entry>
+                <!--更多的订阅添加 entry 节点即可-->
+            </map>
+        </property>
+    </bean>
 
 </beans>
